@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "Goodies-Online-Store"
+    }
+  },
+  "defaultProject": "Goodies-Online-Store",
+  "cli": {
+    "analytics": false
+  }
 }
