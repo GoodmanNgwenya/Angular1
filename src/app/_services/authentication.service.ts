@@ -11,9 +11,12 @@ import { Router } from '@angular/router';
 export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
-
+  private loggedIn=new BehaviorSubject<boolean>(false);
   //private loggedIn = new BehaviorSubject<boolean>(false); 
 
+  get isAuthenticated() {
+    return this.loggedIn.asObservable();
+  }
   get isLoggedIn() {
     //return this.loggedIn.asObservable(); 
     return this.currentUserSubject;
@@ -21,16 +24,16 @@ export class AuthenticationService {
 
   private usersUrl = 'api/users';
 
-    constructor(private http: HttpClient,private router: Router,) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-      this.currentUser = this.currentUserSubject.asObservable();
-    }
+  constructor(private http: HttpClient, private router: Router,) {
+    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
 
-    public get currentUserValue(): User {
-        return this.currentUserSubject.value;
-    }
-  
-  
+  public get currentUserValue(): User {
+    return this.currentUserSubject.value;
+  }
+
+
   login(email: string, password: string): Observable<User> {
     return this.http.get<User[]>(this.usersUrl).pipe(
       //tab(r => console.log(r)), //result from In memory api
@@ -39,7 +42,7 @@ export class AuthenticationService {
         if (foundUser) {
           //save user to local storage
           localStorage.setItem('login', JSON.stringify(foundUser));
-            
+          this.loggedIn.next(true);
           //pushing the found user to BehaviorSubject
           this.currentUserSubject.next(foundUser);
         }
@@ -49,23 +52,12 @@ export class AuthenticationService {
     );
   }
 
-    logout() {
-        // remove user from local storage and set current user to null
-        localStorage.removeItem('currentUser');
-      this.currentUserSubject.next(null);
-      this.router.navigate(['/welcome']);
-    }
-  
-      // working post method
-    // registerUser(email, password) {
-    //   let data = JSON.stringify({email: email, password: password});
-    //   return this.http.post<any>(`${this.usersUrl}/`, { data })
-    //       .pipe(map(user => {
-    //           // store user details and jwt token in local storage to keep user logged in between page refreshes
-    //           localStorage.setItem('login', JSON.stringify(user));
-    //           this.currentUserSubject.next(user);
-    //           return user;
-    //       }));
-    // }
-  
+  logout() {
+    // remove user from local storage and set current user to null
+    this.loggedIn.next(false);
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/welcome']);
+  }
+
 }

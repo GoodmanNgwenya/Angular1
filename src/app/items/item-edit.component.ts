@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../_services/authentication.service';
+import { UserService } from '../_services/user.service';
+import { User } from '../_models/user';
 import { Item } from '../_models/item';
 import { AdvertService } from '../_services/advert.service';
 
 @Component({
-  templateUrl: './welcome.component.html'
+  templateUrl: './item-edit.component.html',
+  styleUrls: ['./item-edit.component.css']
 })
-export class WelcomeComponent implements OnInit {
-  pageTitle = 'Welcome to Goodies online store';
+export class ItemEditComponent implements OnInit {
+  currentUser: User;
   imageWidth = 50;
   imageMargin = 2;
   _searchItem: string;
@@ -23,7 +27,9 @@ export class WelcomeComponent implements OnInit {
   items: Item[] = [];
   filteredItems: Item[] = [];
 
-  constructor(private advertService: AdvertService) { }
+  constructor(private authenticationService: AuthenticationService, private userService: UserService, private advertService: AdvertService) {
+    this.currentUser = this.authenticationService.currentUserValue;
+  }
 
   performFilter(searchBy: string): Item[] {
     searchBy = searchBy.toLocaleLowerCase();
@@ -34,12 +40,17 @@ export class WelcomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.advertService.getItems().subscribe({
-      next: items => {
-        this.items = items;
-        this.filteredItems = items;
-      }
-    })
+    /** 
+     * Return all advert posted by a specific user 
+     */
+    this.advertService.getItem(this.currentUser.id)
+      .subscribe({
+        next: items => {
+          this.items = items;
+          this.filteredItems = items;
+        }
+      })
   }
 
 }
+

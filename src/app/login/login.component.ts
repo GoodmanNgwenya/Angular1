@@ -11,59 +11,47 @@ import { AuthenticationService } from '../_services/authentication.service';
 })
 export class LoginComponent implements OnInit {
   loginForm: NgForm;
-  isSubmitted  =  false;
+  isSubmitted = false;
   errorMessage: string;
   user: User;
   users: User[] = [];
 
   constructor(private router: Router,
     private userService: UserService, private authenticationService: AuthenticationService) {
-    // // redirect to home if already logged in
-    // if (this.authenticationService.currentUserValue) {
-    //   this.router.navigate(['/']);
-    //  }
-   }
-   
-  
-  ngOnInit(): void {   
-    
   }
 
-  
-  login(form:NgForm): void {
-   // console.log(form.value)
-   this.isSubmitted = true;
-    if ( form.value.email === null) {
-          return;
-         }else{
-          this.authenticationService.login(form.value.email,form.value.password)
-            .subscribe({
-              next: (user: User) => {
-                if (user) {
-                  this.emailLogin(user);
-                  console.log('Login successful');
-                }
-                else {
-                  this.errorMessage = 'Username not found';
-                }
-              }
-            });
-           
-      }
-  }
 
-  emailLogin(user: User): void {
-    if (this.loginForm) {
-      this.loginForm.reset();
+  ngOnInit(): void {
+
+    // redirect to home if already logged in
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/']);
     }
-    this.user = user;
-    if (this.user.email === '') {
+  }
+
+
+  login(form: NgForm): void {
+
+    this.isSubmitted = true;
+
+    if (form.value.email === null) {
       return;
-    } else {
-      this.isSubmitted = true;
-      this.router.navigate(['/addItem']);
     }
-  }
 
+    this.authenticationService.login(form.value.email, form.value.password)
+      .subscribe({
+        next: (user: User) => {
+          if (user) {
+            this.isSubmitted = true;
+            this.router.navigate(['/editItem']);
+            //console.log('Login successful');
+          }
+          else {
+            this.errorMessage = 'Username not found';
+          }
+        }
+      });
+
+  }
 
 }

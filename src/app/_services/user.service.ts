@@ -5,54 +5,43 @@ import { tap, catchError, map } from 'rxjs/operators';
 
 import { User } from '../_models/user';
 import { stringify } from '@angular/compiler/src/util';
+import { ReturnStatement } from '@angular/compiler';
 
 
- @Injectable({
+@Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
   private usersUrl = 'api/users';
-  private foundUser: any;
 
-   constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
-    }
-   
-   CheckExistUser(email: string):Observable<User> {
+  }
+
+  register(user: User): Observable<User> {
+    return this.http.post<User>(`${this.usersUrl}/`, { user });
+  }
+
+  registerUser(user: User): Observable<User> {
+    //return this.http.post<User>(`${this.usersUrl}/`, { user });
     return this.http.get<User[]>(this.usersUrl).pipe(
-      //tab(r => console.log(r)), //result from In memory api
       map((users: User[]) => {
-        this.foundUser = users.find(u => u.email === email);
-        if (this.foundUser) {
-              //save user to local storage
-              localStorage.setItem('login', JSON.stringify(this.foundUser));
-              //pushing the found user to BehaviorSubject
-              this.currentUserSubject.next(this.foundUser);
+        let foundUser = users.find(u => u.email === user.email);
+        if (foundUser) {
+          console.log('Username "' + user.email + '" is already taken')
         }
-        //return null if nothing was found
-        return this.foundUser;
+        this.register(user);
+        user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
+        users.push(user);
+        localStorage.setItem('registerUser', JSON.stringify(foundUser));
+        //pushing the found user to BehaviorSubject
+        this.currentUserSubject.next(foundUser);
+        return foundUser;
       })
     );
   }
 
- 
-   registerUser(user: User): Observable<User> {
-     return this.http.post<User>(`${this.usersUrl}/`, { user });
-  }
-   
-
-  private initializeUser(): User {
-    // Return an initialized object
-    return {
-      id: 0,
-      firstName: null,
-      lastName: null,
-      email: null,
-      password: null
-    };
-  }
-  
 }

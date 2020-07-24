@@ -1,12 +1,18 @@
 <div class="card">
     <div class="card-header">
-        {{pageTitle}}
+        Welcome {{currentUser.firstName}}
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-2">Search available item</div>
             <div class="col-md-4">
                 <input class="form-control" type="text" placeholder="Search..." [(ngModel)]='listItem' />
+            </div>
+            <div class="col-md-4" style="float: left;">
+                <button class="btn btn-primary mr-3"
+                type="submit" [routerLink]="['/addItem']" >
+          Add New Advert
+        </button>
             </div>
         </div>
         <div class="row">
@@ -24,6 +30,11 @@
                     <h4 class="text-info">{{item.itemHeader}}</h4>
                     <p> {{item.description}}</p>
                     <p>Posted On: {{item.releaseDate}}</p>
+                    <p>
+                        <button class="btn btn-outline-primary btn-sm" [routerLink]="['/addItem', item.id, 'edit']">
+                            Edit
+                        </button>
+                    </p>
                 </div>
             </div>
         </div>

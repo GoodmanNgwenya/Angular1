@@ -8,8 +8,9 @@ import { WelcomeComponent } from './home/welcome.component';
 import { FormsModule } from '@angular/forms';
 import { UserModule } from './users/user.module';
 import { ItemListComponent } from './items/item-list.component';
-import { ItemAddComponent } from './items/item-add.component';
 import { LoginComponent } from './login/login.component';
+import { ItemEditComponent } from './items/item-edit.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { LoginComponent } from './login/login.component';
     LoginComponent,
     WelcomeComponent,
     ItemListComponent,
-    ItemAddComponent
+    ItemEditComponent
   ],
   imports: [
     BrowserModule,
@@ -26,12 +27,12 @@ import { LoginComponent } from './login/login.component';
     RouterModule.forRoot([
       { path: 'login', component: LoginComponent },
       { path: 'welcome', component: WelcomeComponent },
-      { path: '',redirectTo:'welcome',pathMatch:'full' }
+      { path: '', redirectTo: 'welcome', pathMatch: 'full' }
     ]),
     UserModule
 
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,49 +1,37 @@
-<div class="card" style="width:500px; margin:50px auto; padding: 5pc;" >
-    <div class="card-header">
-      Log In
-    </div>
-    <div class="card-body">
-      <form class="login-container"  (ngSubmit)="login(loginForm)" #loginForm="ngForm">
-        <input class="form-control" placeholder="Username"
-        type="email" 
-        name="email" 
-        ngModel 
-        #email="ngModel" 
-        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" 
-        required
+<div class="card" style="width:500px; margin:50px auto; padding: 5pc;">
+  <div class="card-header">
+    Log In
+  </div>
+  <div class="card-body">
+    <form class="login-container" (ngSubmit)="login(loginForm)" #loginForm="ngForm">
+      <input class="form-control" placeholder="Username" type="email" name="email" ngModel #email="ngModel"
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required
         [ngClass]="{ 'has-error': isSubmitted && email.errors }">
-      <br/>
-      
+      <br />
+
       <div *ngIf="email.touched" class="help-block">
         <p *ngIf="email.errors?.required">Email is a required field!</p>
         <p *ngIf="email.errors?.pattern">This is not a valid Email!!!</p>
       </div>
-    
-    
-        <p >
-          <input class="form-control"  placeholder="Password"
-          id="password" 
-            type="password"  
-            name="password"
-            ngModel
-            minlength="6"
-            #password="ngModel"
-            required
-            [ngClass]="{ 'has-error': isSubmitted && password.errors }">
-        </p>
-    
-        <div *ngIf="isSubmitted && password.errors" class="help-block">
-          <div *ngIf="password?.errors.required">Password is required</div>
-        </div>
-    
-        <p>
-          <input class="btn btn-primary mr-3" [disabled]='!loginForm.valid' type="submit" value="Log in">
-      
-          <a routerLink="/register" class="btn btn-link">Register</a>
-        </p>
-      </form>
+
+
+      <p>
+        <input class="form-control" placeholder="Password" id="password" type="password" name="password" ngModel
+          minlength="6" #password="ngModel" required [ngClass]="{ 'has-error': isSubmitted && password.errors }">
+      </p>
+
+      <div *ngIf="isSubmitted && password.errors" class="help-block">
+        <div *ngIf="password?.errors.required">Password is required</div>
+        <p *ngIf="password.errors?.minlength">Please Enter atleast 6 characters</p>
+      </div>
+
+      <p>
+        <input class="btn btn-primary mr-3"  type="submit" value="Log in">
+
+        <a routerLink="/register" class="btn btn-link">Register</a>
+      </p>
+    </form>
   </div>
-  <div class="alert alert-danger"
-       *ngIf="errorMessage">{{errorMessage}}
+  <div class="alert alert-danger" *ngIf="errorMessage">{{errorMessage}}
   </div>
 </div>

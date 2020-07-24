@@ -1,144 +1,76 @@
 <div class="card" style="width:800px; margin:50px auto;">
-    <div class="card-header">
-      Sign Up!
-    </div>
-    <div class="card-body">
-      <form novalidate
-            (ngSubmit)="saveUser()"
-            [formGroup]="userForm">
-  
-        <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="firstNameId">First Name*</label>
-          <div class="col-md-8">
-            <input class="form-control"
-                   id="firstNameId"
-                   type="text"
-                   placeholder="First Name"
-                   formControlName="firstName"
-                   [ngClass]="{'is-invalid': (userForm.get('firstName').touched || userForm.get('firstName').dirty) && !userForm.get('firstName').valid }" />
-            <span class="invalid-feedback">
-              <span *ngIf="userForm.get('firstName').errors?.required">
-                Please enter your first name.
-              </span>
-              <span *ngIf="userForm.get('firstName').errors?.minlength">
-                The first name must be longer than 3 characters.
-              </span>
-            </span>
+  <div class="card-header">
+    Sign Up!
+  </div>
+  <div class="card-body">
+    <form [formGroup]="registerForm" (ngSubmit)="save()">
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" for="firstName">First Name*</label>
+        <div class="col-md-8">
+          <input type="text" formControlName="firstName" placeholder="First Name" class="form-control"
+            [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+          <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+            <div *ngIf="f.lastName.errors.pattern">Blank space not required</div>
           </div>
         </div>
-  
-        <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="lastNameId">Last Name*</label>
-          <div class="col-md-8">
-            <input class="form-control"
-                   id="lastNameId"
-                   type="text"
-                   placeholder="Last Name"
-                   formControlName="lastName"
-                   [ngClass]="{'is-invalid': (userForm.get('lastName').touched || userForm.get('lastName').dirty) && !userForm.get('lastName').valid }" />
-            <span class="invalid-feedback">
-              <span *ngIf="userForm.get('lastName').errors?.required">
-                Please enter your last name.
-              </span>
-              <span *ngIf="userForm.get('lastName').errors?.maxlength">
-                The last name must be less than 50 characters.
-              </span>
-            </span>
+      </div>
+      <div class="form-group row mb-2">
+
+        <label class="col-md-2 col-form-label" for="lastName">Last Name*</label>
+        <div class="col-md-8">
+          <input type="text" formControlName="lastName" placeholder="Last Name" class="form-control"
+            [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+          <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+            <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+            <div *ngIf="f.lastName.errors.pattern">Blank space not required</div>
           </div>
         </div>
-  
-        <!-- <div formGroupName="emailGroup"> -->
-        <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="emailId">Email*</label>
-          <div class="col-md-8">
-            <input class="form-control"
-                   id="emailId"
-                   type="email"
-                   placeholder="Email"
-                   formControlName="email"
-                   [ngClass]="{'is-invalid':emailMessage}" />
-            <span class="invalid-feedback">
-              {{emailMessage}}
-            </span>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-md-2 col-form-label" for="email">Username*</label>
+        <div class="col-md-8">
+          <input type="text" formControlName="email" placeholder="Email" class="form-control"
+            [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Username is required</div>
           </div>
         </div>
-  
-        <!-- <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="confirmEmailId">Confirm Email*</label>
-          <div class="col-md-8">
-            <input class="form-control"
-                   id="confirmEmailId"
-                   type="email"
-                   placeholder="Confirm Email"
-                   formControlName="confirmEmail"
-                   [ngClass]="{'is-invalid':emailMessage}" />
-            <span class="invalid-feedback">
-              <span *ngIf="userForm.get('emailGroup.confirmEmail').errors?.required">
-                Please confirm your email address.
-              </span>
-              <span *ngIf="userForm.get('emailGroup').errors?.match">
-                The confirmation does not match the email address.
-              </span>
-            </span>
-          </div>
-        </div>
-      </div> -->
-      
+      </div>
       <div formGroupName="passGroup">
         <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="passId">Password*</label>
+          <label class="col-md-2 col-form-label" for="passId">Password*</label>
           <div class="col-md-8">
-            <input class="form-control"
-                   id="passId"
-                   type="password"
-                   placeholder="Password"
-                   formControlName="password"
-                   [ngClass]="{'is-invalid':passwordMessage}" />
+            <input class="form-control" minlength="6" required id="passId"  type="password" placeholder="Password" formControlName="password"
+              [ngClass]="{ 'is-invalid': submitted && passwordMessage }" />
             <span class="invalid-feedback">
               {{passwordMessage}}
             </span>
           </div>
         </div>
-  
+
         <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="confirmPasswordId">Confirm Password*</label>
+          <label class="col-md-2 col-form-label" for="confirmPasswordId">Confirm Password*</label>
           <div class="col-md-8">
-            <input class="form-control"
-                   id="confirmPasswordId"
-                   type="password"
-                   placeholder="Confirm Password"
-                   formControlName="confirmPassword"
-                   [ngClass]="{'is-invalid':passwordMessage}" />
+            <input class="form-control" id="confirmPasswordId" type="password" placeholder="Confirm Password"
+              formControlName="confirmPassword" [ngClass]="{'is-invalid':passwordMessage}" />
             <span class="invalid-feedback">
-              <span *ngIf="userForm.get('passGroup.confirmPassword').errors?.required">
+              <span *ngIf="registerForm.get('passGroup.confirmPassword').errors?.required">
                 Please confirm your password.
               </span>
-              <span *ngIf="userForm.get('passGroup').errors?.match">
+              <span *ngIf="registerForm.get('passGroup').errors?.match">
                 The confirmation does not match the password.
               </span>
             </span>
           </div>
         </div>
       </div>
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">Register</button>
+        <img *ngIf="loading" class="pl-3" />
+        <a routerLink="/login" class="btn btn-link">Cancel</a>
+      </div>
+    </form>
 
-  
-        <div class="form-group row mb-2">
-          <div class="offset-md-2 col-md-4">
-            <button class="btn btn-primary mr-3"
-                    type="submit"
-                    style="width:80px"
-                    [title]="userForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
-                    [disabled]="!userForm.valid">
-              Save
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+  </div>
 </div>
